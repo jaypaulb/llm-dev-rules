@@ -1,8 +1,4 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with this repository.
-
-## Project Overview
+# llm-dev-rules
 
 **llm-dev-rules** is a comprehensive development standards repository that provides:
 
