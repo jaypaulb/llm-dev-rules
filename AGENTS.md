@@ -1,94 +1,67 @@
-# AGENTS.md — CursorRules
+# AGENTS.md — llm-dev-rules
 
-**READ THIS FIRST** before reviewing or editing anything in this repo.
+> READ FIRST. Context map for agents reviewing or navigating this repo.
+> A deeper, Claude-specific version lives in `CLAUDE.md` — this file is the
+> concise reviewer-facing entry point and coexists with it deliberately
+> (the review fleet keys on AGENTS.md).
 
 ## What this repo is
 
-A **content repository** of reusable Cursor Rules — modular development standards
-(`.mdc` files) plus supporting Markdown docs. There is **no executable code, no
-build, no tests**. The "product" is the prose guidance itself: rules that Cursor
-IDE / AI agents load to shape how they write code in a consumer project.
+A **documentation / standards template repository** — no executable application
+code. It packages development standards and AI-agent rules to be copied or
+`git subtree`'d into other projects. Contents are Markdown (`.md`), Cursor rule
+files (`.mdc`), and a few YAML configs. There is nothing to build, run, or test
+here; "correctness" for a reviewer means: internally consistent guidance, no
+dangerous/insecure advice, and no stale instructions that point at things that
+do not exist.
 
-Reviewers should evaluate this repo as **documentation**: internal
-contradictions, dangerous or wrong guidance, and staleness — not compile errors.
+## Layout — what is LIVE vs LEGACY/SCRATCH
 
-## Layout
+Reviewers: judge the LIVE trees. Do not report the legacy/scratch trees as if
+they were canonical — they are retained history and known to be superseded.
 
-```
-.cursor/rules/            ← ACTIVE rule set (the thing that ships)
-├── core/                 always-apply rules: security, quality-gates,
-│                         file-operations, command-execution, error-handling,
-│                         naming-conventions, tdd-methodology, code-structure,
-│                         project-structure, dev-env, documentation, performance
-├── workflows/            local-agent, background-agent, code-review, ci-cd
-│   └── specialized/      refactor, refresh, reflect, research
-├── languages/            per-language: python, golang, rust, cpp, typescript,
-│                         mern, flutter, canvus, esp32, rest/graphql/websocket-api
-├── project/              tasks, issues, project-management
-├── examples/             minimal-python, minimal-command-execution
-├── templates/            scaffolding templates
-├── dross/                META-DOCS about the rules (not rules themselves):
-│                         MIGRATION_GUIDE, RULE_SELECTION_GUIDE,
-│                         VALIDATION_REPORT, DUPLICATION_CLEANUP, DEPLOYMENT
-└── README.md             describes the "atomic" refactored structure
+| Path | Status | Owns |
+|---|---|---|
+| `.cursor/rules/` | LIVE | Cursor IDE rule set (37 `.mdc` files: `core/`, `languages/`, `workflows/`, `project/`, `examples/`) |
+| `.claude/` | LIVE | Claude Code Agent OS config: `agents/` (8), `commands/` (7), `skills/` (15 `SKILL.md`) |
+| `agent-os/profiles/default/` | LIVE | Agent OS profile: `standards/` (41 `.md`), `workflows/` (4 `.yml`), configs |
+| `scripts/` | LIVE | `deploy-llm-rules.sh`, `rollback-llm-rules.sh` (the only shell scripts) |
+| `README.md`, `CLAUDE.md`, `PRD.md` | LIVE | Top-level docs |
+| `.cursor/rules/dross/` | SCRATCH | Old conversion/migration reports, superseded |
+| `dross/` | SCRATCH | Conversion logs and profile-structure notes, superseded |
+| `rules-old/` | LEGACY | Numbered pre-refactor rule set (`1.1-core.mdc` …), superseded by `.cursor/rules/` |
+| `CHAT_CONTEXT.md`, `PROFILE_SYSTEM_COMPLETE.md` | SCRATCH | Session-recovery / status snapshots, not authoritative |
 
-rules-old/                LEGACY pre-refactor rules (numbered 1.1-core.mdc etc.)
-                          Kept for reference; superseded by .cursor/rules/.
-                          Expect duplication/divergence vs the active set.
+## Known documentation drift (verify counts before trusting prose)
 
-Root docs: README.md, PRD.md, TASKS.md, ATOMIC-DESIGN-PLAN.md,
-           master-ide-rule.md
-```
+The narrative docs carry stale numbers. Actual on-disk counts (verified):
 
-## Rule file format
+- **Skills**: 15 `SKILL.md` files. README says "16", `CLAUDE.md` says both
+  "16" and "18" in different sections — all three disagree with disk.
+- **Cursor core rules**: `core/` holds **12** `.mdc` files, but README/CLAUDE
+  describe a "7-file, ~728-token" always-apply core. The `~728 tokens` budget
+  claim is asserted, not measured here.
+- **Standards**: 41 `.md` files on disk; docs say "49".
+- **Missing referenced files**: `CLAUDE.md` and README reference `TASKS.md` and
+  a root `ATOMIC-DESIGN-PLAN.md` — neither exists at root (`ATOMIC-DESIGN-PLAN.md`
+  is under `dross/`).
 
-Each `.mdc` is Markdown with YAML frontmatter:
+These are candidate review findings (stale-instruction / internal-contradiction
+class), not blockers to navigation.
 
-```
----
-description: <what the rule covers>
-globs: *.py,*.js        # file patterns that trigger it (optional)
-alwaysApply: true/false # load regardless of file type
----
-# Rule body...
-```
+## Rule file convention
 
-Two loading modes: `alwaysApply: true` (core + workflow rules, always in
-context) vs. glob-scoped (language/project rules, load when matching files are
-edited). Design goal stated in README: keep total loaded context under ~1k
-tokens per call.
+Each `.mdc` / standard file uses YAML frontmatter (`description`, `globs`,
+`alwaysApply`) followed by actionable Markdown. When reviewing, check that
+`globs`/`alwaysApply` claims match how README's "Rule Selection Guide" says the
+file is applied, and that security guidance (input validation, secret handling,
+injection prevention) is sound and not contradicted elsewhere.
 
-## Known staleness / contradiction signals (verify, flag to reviewers)
+## Guardrails for anyone editing here
 
-These are pre-existing tensions a content reviewer should weigh — not
-necessarily defects to fix, but worth surfacing:
-
-- **Root `README.md` references `.cursor/rules-atomic/`** repeatedly as the "new
-  atomic structure." That directory **does not exist** — the atomic rules were
-  moved into `.cursor/rules/`. Paths and "legacy - see languages/…" notes in the
-  root README are stale relative to the actual tree.
-- **Root README metadata says Version 1.0.0 / Last Updated January 2024**, but
-  files were last modified November 2025. The dating is unreliable.
-- **`rules-old/` duplicates concepts in `.cursor/rules/`.** When the same rule
-  exists in both places, treat `.cursor/rules/` as authoritative and check for
-  contradictory guidance between the two.
-- **`dross/` contains meta-reports** (VALIDATION_REPORT, DUPLICATION_CLEANUP)
-  that describe an intended end-state; verify claims there still match the tree
-  before trusting them.
-
-## What matters in review
-
-- **Internal contradictions**: two rules giving opposing instructions (e.g. an
-  always-apply core rule vs. a language rule), or a rule contradicting the README.
-- **Dangerous guidance**: shell commands, security advice, or "always do X"
-  directives that are unsafe or would harm a consumer project.
-- **Staleness**: broken internal path references, dead links, outdated tool/API
-  guidance, references to files/dirs that no longer exist.
-- **Frontmatter correctness**: valid `globs`, sensible `alwaysApply`, accurate
-  `description`.
-
-## Scope / non-goals
-
-Do not treat this as an application. There is nothing to run or index for
-behavior — CodeGraph will find essentially no symbols here. Edits should be
-prose/guidance changes only.
+- This is a **template consumed by other repos** — changing a rule's stated
+  contract (globs, alwaysApply, naming/quality-gate mandates) ripples into every
+  downstream project that subtree-pulled it. Treat contract changes as
+  higher-stakes than the docs-only surface suggests.
+- Keep LIVE and LEGACY/SCRATCH separate; do not resurrect `rules-old/` or
+  `dross/` content into the live trees.
