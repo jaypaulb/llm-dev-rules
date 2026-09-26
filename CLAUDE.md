@@ -38,8 +38,6 @@ cat README.md
 # View Product Requirements Document
 cat PRD.md
 
-# Check active tasks
-cat TASKS.md
 ```
 
 ### Agent OS Configuration
@@ -97,16 +95,16 @@ llm-dev-rules/
 ├── .claude/                          # Claude Code Agent OS profile system
 │   ├── agents/agent-os/              # 8 agent definitions (spec-initializer, shaper, writer, verifier, product-planner, tasks-list-creator, implementer, implementation-verifier)
 │   ├── commands/agent-os/            # 7 Claude Code commands (plan-product, shape-spec, write-spec, create-tasks, orchestrate-tasks, implement-tasks, improve-skills)
-│   └── skills/                       # 16 reusable skills (backend-api, backend-models, backend-migrations, backend-queries, frontend-components, frontend-css, frontend-accessibility, frontend-responsive, testing-test-writing, + 7 global skills)
+│   └── skills/                       # 15 reusable skills (backend-api, backend-models, backend-migrations, backend-queries, frontend-components, frontend-css, frontend-accessibility, frontend-responsive, testing-test-writing, + 6 global skills)
 │
 ├── agent-os/                         # Agent OS profile system
 │   ├── config.yml                    # Agent OS v2.1.1 configuration
 │   └── profiles/
 │       └── default/
 │           ├── profile-config.yml    # Profile definition with inheritance
-│           ├── standards/            # Development standards (49 files)
-│           │   ├── global/ (14 files)
-│           │   ├── backend/ (8 files)
+│           ├── standards/            # Development standards (41 files incl. README + CONVERSION_LOG)
+│           │   ├── global/ (19 files)
+│           │   ├── backend/ (10 files)
 │           │   ├── frontend/ (7 files)
 │           │   └── testing/ (3 files)
 │           ├── workflows/ (4 files)
@@ -115,8 +113,7 @@ llm-dev-rules/
 │
 ├── README.md                         # Main documentation (deployment methods, rule selection)
 ├── PRD.md                           # Product Requirements Document
-├── CLAUDE.md                        # Claude Code guidance (this file)
-└── TASKS.md                         # Active task list
+└── CLAUDE.md                        # Claude Code guidance (this file)
 ```
 
 ### Core Architectural Principles
@@ -184,8 +181,8 @@ Located in `.claude/` and `agent-os/profiles/default/`, enables autonomous featu
   8. `implementation-verifier`: Verify end-to-end implementation
 
 - **7 Claude Code commands** (`.claude/commands/agent-os/`) for workflow automation
-- **16 reusable skills** (`.claude/skills/`) mapped to development concerns (backend-models, frontend-accessibility, global-validation, etc.)
-- **49 development standards** (`.agent-os/profiles/default/standards/`) organized by domain
+- **15 reusable skills** (`.claude/skills/`) mapped to development concerns (backend-models, frontend-accessibility, global-validation, etc.)
+- **41 development standards files** (`.agent-os/profiles/default/standards/`) organized by domain
 
 ### Key Standards
 
@@ -308,27 +305,6 @@ Product Requirements Document. Describes:
 - Feature requirements
 - Success criteria
 
-### ATOMIC-DESIGN-PLAN.md
-Architecture design document. Explains:
-- Atomic design hierarchy in detail
-- Examples of atoms, molecules, organisms
-- Benefits and rationale
-
-### TASKS.md
-Active task list for development. Format:
-```markdown
-# Active Tasks
-
-## In Progress
-- [ ] Task name with context
-
-## Pending
-- [ ] Task name
-
-## Completed
-- [x] Task name
-```
-
 ### agent-os/config.yml
 Agent OS configuration (v2.1.1):
 - Compilation timestamp
@@ -338,7 +314,7 @@ Agent OS configuration (v2.1.1):
 ### agent-os/profiles/default/
 The default Agent OS profile containing:
 - Profile configuration with inheritance support
-- 49 development standards organized by domain
+- 41 development standards files organized by domain
 - 4 workflows for different development scenarios
 - Agent and command configurations
 
@@ -382,7 +358,7 @@ Located in `.claude/agents/agent-os/`:
 
 ### Using Claude Code Skills
 Located in `.claude/skills/`:
-- 18 reusable skills for common development concerns
+- 15 reusable skills for common development concerns
 - Automatically applied based on file patterns and context
 - Examples: backend-models, frontend-accessibility, global-validation
 
